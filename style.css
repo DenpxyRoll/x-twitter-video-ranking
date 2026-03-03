@@ -1,0 +1,779 @@
+/* ===== Reset & Base ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg: #f8f8f8;
+  --color-surface: #ffffff;
+  --color-border: #e5e5e5;
+  --color-text-primary: #0f0f0f;
+  --color-text-secondary: #555555;
+  --color-accent: #1d9bf0;
+  --color-accent-hover: #1a8cd8;
+  --color-overlay: rgba(0, 0, 0, 0.55);
+  --radius-card: 14px;
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 28px rgba(0, 0, 0, 0.14);
+  --font: 'Inter', sans-serif;
+  --header-h: 60px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Header ===== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+  height: var(--header-h);
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.logo-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-text-primary);
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.filter-btn {
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background 0.18s, color 0.18s;
+}
+
+.filter-btn:hover {
+  background: #f0f0f0;
+  color: var(--color-text-primary);
+}
+
+.filter-btn.active {
+  background: var(--color-text-primary);
+  color: #fff;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.18s, transform 0.12s;
+  white-space: nowrap;
+}
+
+.upload-btn:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.upload-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== Main Layout ===== */
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ===== Video Grid ===== */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+/* ===== Video Card ===== */
+.video-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(.25, .8, .25, 1), box-shadow 0.22s;
+  position: relative;
+}
+
+.video-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* 縦型 9:16 ratio */
+.video-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  background: #e8e8e8;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.video-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+/* Play icon overlay (shown when paused) */
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.15);
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.play-overlay.hidden {
+  opacity: 0;
+}
+
+.play-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.play-icon svg {
+  width: 20px;
+  height: 20px;
+  margin-left: 3px;
+  color: var(--color-text-primary);
+}
+
+/* X badge (top-right corner of thumb) */
+.x-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.x-badge svg {
+  width: 14px;
+  height: 14px;
+  color: var(--color-text-primary);
+}
+
+.video-card:hover .x-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Rank badge (top-left corner) */
+.rank-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  min-width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 7px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.rank-badge.rank-top3 {
+  font-size: 16px;
+  min-width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* Empty state */
+.empty-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+/* Preview progress bar */
+.preview-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: var(--color-accent);
+  transition: width linear;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Card info area */
+.card-info {
+  padding: 12px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-user {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 2px;
+}
+
+
+.avatar {
+  display: none;
+}
+
+.user-name {
+
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-caption {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.meta-item svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ===== Grid wrapper ===== */
+#gridWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ===== Inline Banner Row (after every 5 videos) ===== */
+.inline-banner-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 20px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  margin: 4px 0 8px;
+  flex-wrap: nowrap;
+  /* 横に並べる */
+}
+
+.inline-banner-cell {
+  flex: 1;
+  min-width: 0;
+  /* flexアイテムが縮めるように */
+  max-width: 250px;
+  line-height: 0;
+  overflow: hidden;
+}
+
+/* アフィリエイトHTMLのimgタグにwidth属性があっても強制的に収める */
+.inline-banner-cell img {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  border-radius: 4px;
+}
+
+.inline-banner-cell a {
+  display: block;
+  line-height: 0;
+}
+
+@media (max-width: 560px) {
+  .inline-banner-row {
+    gap: 16px;
+    padding: 12px 0;
+  }
+
+  .inline-banner-cell {
+    max-width: 160px;
+  }
+}
+
+
+/* ===== Floating Banners ===== */
+.banner-topright {
+  position: fixed;
+  top: 70px;
+  right: 16px;
+  z-index: 90;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  max-width: 200px;
+}
+
+.banner-bottomcenter {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  max-width: 480px;
+  width: 90vw;
+}
+
+.banner-topright img,
+.banner-bottomcenter img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.banner-topright a,
+.banner-bottomcenter a {
+  display: block;
+  line-height: 0;
+}
+
+.banner-close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.banner-close:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* ===== Age Gate ===== */
+.age-gate-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.age-gate-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 36px;
+  max-width: 420px;
+  width: 90vw;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.age-gate-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.age-gate-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 14px;
+}
+
+.age-gate-body {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.age-gate-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.age-btn {
+  padding: 13px 28px;
+  border: none;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.age-btn:hover {
+  opacity: 0.85;
+  transform: scale(1.03);
+}
+
+.age-btn-yes {
+  background: #1d9bf0;
+  color: #fff;
+  min-width: 160px;
+}
+
+.age-btn-no {
+  background: #f0f0f0;
+  color: #555;
+  min-width: 100px;
+}
+
+.age-gate-note {
+  font-size: 11px;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+/* ===== Popup Ad Overlay ===== */
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.popup-box {
+  position: relative;
+  background: transparent;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#popupContent {
+  line-height: 0;
+}
+
+#popupContent img {
+  max-width: 90vw;
+  max-height: 85vh;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+#popupContent a {
+  display: block;
+  line-height: 0;
+}
+
+.popup-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: background 0.15s, transform 0.15s;
+}
+
+.popup-close:hover {
+  background: #f0f0f0;
+  transform: scale(1.1);
+}
+
+/* admin link styled same as upload-btn */
+
+a.upload-btn {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== Responsive: Tablet ===== */
+@media (max-width: 768px) {
+  .header-nav {
+    gap: 2px;
+  }
+
+  .filter-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .video-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .main-content {
+    padding: 20px 14px 40px;
+  }
+
+  /* タブレットでは右上バナーを小さめに */
+  .banner-topright {
+    max-width: 150px;
+  }
+}
+
+/* ===== Responsive: Smartphone (480px以下) ===== */
+@media (max-width: 480px) {
+
+  /* ヘッダー: 横スクロールで縦折れ解消 */
+  .header-inner {
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .logo span {
+    font-size: 13px;
+  }
+
+  .header-nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    gap: 4px;
+    scrollbar-width: none;
+  }
+
+  .header-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .upload-btn {
+    padding: 7px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* 動画グリッド: 2カラム固定 */
+  .video-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .main-content {
+    padding: 14px 8px 100px;
+  }
+
+  .card-info {
+    padding: 8px 8px 10px;
+  }
+
+  .card-caption {
+    font-size: 11px;
+  }
+
+  /* 右上バナー: スマホでは非表示（画面を塞ぐため） */
+  .banner-topright {
+    display: none !important;
+  }
+
+  /* 中央下バナー: よりコンパクトに */
+  .banner-bottomcenter {
+    bottom: 10px;
+    max-width: 320px;
+    width: 92vw;
+    border-radius: 8px;
+  }
+
+  /* インラインバナー: 小さめに */
+  .inline-banner-row {
+    gap: 12px;
+    padding: 10px 0;
+  }
+
+  .inline-banner-cell {
+    width: 140px;
+    max-width: 140px;
+  }
+}

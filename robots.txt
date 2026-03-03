@@ -1,0 +1,8 @@
+# robots.txt — Twitter動画保存ランキング
+# 公開後に Sitemap の URL をあなたのドメインに書き換えてください
+
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+Sitemap: https://yourdomain.com/sitemap.xml

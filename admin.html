@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>管理画面 — Twitter動画保存ランキング</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent: #1d9bf0;
+            --bg: #f5f5f5;
+            --surface: #fff;
+            --border: #e2e2e2;
+            --text: #111;
+            --text2: #666;
+            --red: #e0245e;
+            --green: #34c759;
+            --font: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ===== Login ===== */
+        #loginScreen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 36px;
+            width: 340px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .login-logo {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-sub {
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 28px;
+        }
+
+        .login-box input[type="password"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: var(--font);
+            outline: none;
+            margin-bottom: 14px;
+            transition: border-color 0.15s;
+        }
+
+        .login-box input[type="password"]:focus {
+            border-color: var(--accent);
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 11px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .login-box button:hover {
+            opacity: 0.85;
+        }
+
+        .login-error {
+            color: var(--red);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* ===== Admin App ===== */
+        #adminApp {
+            display: none;
+        }
+
+        .admin-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .admin-header h1 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .save-all-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 7px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .save-all-btn:hover {
+            opacity: 0.85;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: var(--text2);
+            font-family: var(--font);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .logout-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .view-site-link {
+            font-size: 13px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .view-site-link:hover {
+            text-decoration: underline;
+        }
+
+        .admin-body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px 80px;
+        }
+
+        /* Mode Tabs */
+        .mode-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: #ebebeb;
+            border-radius: 10px;
+            padding: 4px;
+            width: fit-content;
+        }
+
+        .mode-tab {
+            padding: 7px 18px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font);
+            color: var(--text2);
+            cursor: pointer;
+            border-radius: 7px;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .mode-tab.active {
+            background: var(--surface);
+            color: var(--text);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Category Tabs */
+        #catTabRow {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cat-tab {
+            padding: 8px 18px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: var(--font);
+            color: var(--text2);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        .cat-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Rank table */
+        .table-header {
+            display: grid;
+            grid-template-columns: 52px 1fr 1fr 110px 70px 70px 80px;
+            gap: 6px;
+            padding: 0 0 8px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 4px;
+        }
+
+        .table-header span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .rank-row {
+            display: grid;
+            grid-template-columns: 52px 1fr 1fr 110px 70px 70px 80px;
+            gap: 6px;
+            align-items: center;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rank-row:last-child {
+            border-bottom: none;
+        }
+
+        .rank-num {
+            font-size: 17px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text2);
+        }
+
+        .rank-num.top3 {
+            color: var(--accent);
+        }
+
+        .rank-row input[type="text"],
+        .rank-row input[type="number"] {
+            width: 100%;
+            padding: 7px 9px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font-size: 12px;
+            font-family: var(--font);
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .rank-row input:focus {
+            border-color: var(--accent);
+        }
+
+        .rank-row input::placeholder {
+            color: #bbb;
+        }
+
+        .rank-row input.active-url {
+            border-color: var(--green);
+            background: #f0fdf4;
+        }
+
+        /* Preview field with fetch button */
+        .preview-field {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .preview-field .preview-input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .fetch-btn {
+            flex-shrink: 0;
+            padding: 6px 8px;
+            background: #f0f9ff;
+            border: 1px solid #bae0fd;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: var(--font);
+            color: var(--accent);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+
+        .fetch-btn:hover {
+            background: #e0f2fe;
+        }
+
+        .fetch-btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        .time-input {
+
+            text-align: center;
+        }
+
+        .row-status {
+            font-size: 11px;
+            color: #aaa;
+            text-align: center;
+        }
+
+        .row-status.ok {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        /* Banner separator in video list */
+        .banner-separator {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 7px;
+            padding: 7px 14px;
+            font-size: 12px;
+            color: #3b82f6;
+            margin: 6px 0;
+            font-weight: 500;
+        }
+
+        /* Banner section */
+        .banner-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+        }
+
+        .banner-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .banner-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .banner-fields label,
+        .banner-slot-label {
+            font-size: 11px;
+            color: var(--text2);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .hint-text {
+            font-size: 10px;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            color: #999;
+        }
+
+        textarea[data-key] {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 11px;
+            font-family: monospace;
+            outline: none;
+            resize: vertical;
+            transition: border-color 0.15s;
+            line-height: 1.5;
+        }
+
+        textarea[data-key]:focus {
+            border-color: var(--accent);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: 0;
+            padding: 2px 0;
+        }
+
+        .toggle-label input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+
+        /* Inline banner pair */
+        .inline-banner-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .inline-banner-slot {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 999px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 999;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 800px) {
+
+            .table-header,
+            .rank-row {
+                grid-template-columns: 44px 1fr 1fr;
+            }
+
+            .table-header span:nth-child(n+4),
+            .rank-row>*:nth-child(n+4) {
+                display: none;
+            }
+
+            .inline-banner-pair {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">🔐 管理者ログイン</div>
+            <p class="login-sub">Twitter動画保存ランキング</p>
+            <input type="password" id="passwordInput" placeholder="パスワードを入力" />
+            <button id="loginBtn">ログイン</button>
+            <p class="login-error" id="loginError">パスワードが正しくありません</p>
+        </div>
+    </div>
+
+    <!-- Admin App -->
+    <div id="adminApp">
+        <header class="admin-header">
+            <h1>🎬 動画ランキング管理</h1>
+            <div class="admin-header-right">
+                <a href="index.html" class="view-site-link" target="_blank">→ サイトを見る</a>
+                <button class="save-all-btn" id="saveAllBtn">💾 保存する</button>
+                <button class="logout-btn" id="logoutBtn">ログアウト</button>
+            </div>
+        </header>
+
+        <div class="admin-body">
+            <!-- Mode Tabs -->
+            <div class="mode-tabs">
+                <button class="mode-tab active" data-mode="videos">📹 動画ランキング</button>
+                <button class="mode-tab" data-mode="banners">🖼️ バナー広告</button>
+            </div>
+
+            <!-- Category Tabs -->
+            <div id="catTabRow">
+                <button class="cat-tab active" data-cat="today">１日</button>
+                <button class="cat-tab" data-cat="week">１週間</button>
+                <button class="cat-tab" data-cat="month">１ヶ月</button>
+                <button class="cat-tab" data-cat="alltime">殿堂入り</button>
+            </div>
+
+            <div id="rankList"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="admin.js"></script>
+</body>
+
+</html>

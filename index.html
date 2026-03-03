@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Twitter動画保存ランキング | X（旧Twitter）話題の動画まとめ</title>
+  <meta name="description" content="X（旧Twitter）で話題・バズっている動画を1日・1週間・1ヶ月・殿堂入りのランキング形式で紹介。人気動画をまとめてチェック！" />
+  <meta name="keywords" content="Twitter動画, X動画, ツイッター動画, バズ動画, 話題動画, 動画ランキング" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Canonical URL（公開後にあなたのドメインに書き換えてください） -->
+  <link rel="canonical" href="https://yourdomain.com/" />
+
+  <!-- OGP（SNSシェア時の表示） -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Twitter動画保存ランキング | X（旧Twitter）話題の動画まとめ" />
+  <meta property="og:description" content="X（旧Twitter）で話題・バズっている動画を期間別ランキングで紹介！" />
+  <meta property="og:url" content="https://yourdomain.com/" />
+  <meta property="og:locale" content="ja_JP" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Twitter動画保存ランキング" />
+  <meta name="twitter:description" content="X（旧Twitter）で話題・バズっている動画を期間別ランキングで紹介！" />
+
+  <!-- JSON-LD 構造化データ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Twitter動画保存ランキング",
+    "url": "https://yourdomain.com/",
+    "description": "X（旧Twitter）で話題の動画を期間別ランキングで紹介するサイト",
+    "inLanguage": "ja"
+  }
+  </script>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DD4HLRZR65"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DD4HLRZR65');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+        <span>Twitter動画保存ランキング</span>
+      </div>
+      <nav class="header-nav">
+        <button class="filter-btn active" data-filter="today">１日</button>
+        <button class="filter-btn" data-filter="week">１週間</button>
+        <button class="filter-btn" data-filter="month">１ヶ月</button>
+        <button class="filter-btn" data-filter="alltime">殿堂入り</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="section-header">
+      <h1 class="section-title" id="sectionTitle">急上昇動画</h1>
+      <span class="section-subtitle">スクロールして動画をプレビュー</span>
+    </div>
+    <div id="gridWrapper">
+      <!-- 5本ずつのvideo-gridとインラインバナーはscript.jsが動的生成 -->
+    </div>
+  </main>
+
+  <!-- Banner: top-right (floats over content) -->
+  <div id="bannerTopRight" class="banner-topright" style="display:none;"></div>
+
+  <!-- Banner: bottom-center (floats over content) -->
+  <div id="bannerBottomCenter" class="banner-bottomcenter" style="display:none;"></div>
+
+  <!-- Age Gate -->
+  <div id="ageGate" class="age-gate-overlay">
+    <div class="age-gate-box">
+      <div class="age-gate-icon">🔞</div>
+      <h2 class="age-gate-title">年齢確認</h2>
+      <p class="age-gate-body">このサイトは成人向けコンテンツを含みます。<br>あなたは<strong>18歳以上</strong>ですか？</p>
+      <div class="age-gate-buttons">
+        <button class="age-btn age-btn-yes" id="ageYes">はい（18歳以上）</button>
+        <button class="age-btn age-btn-no" id="ageNo">いいえ</button>
+      </div>
+      <p class="age-gate-note">「はい」をクリックすることで、あなたが18歳以上であることを確認します。</p>
+    </div>
+  </div>
+
+  <!-- Popup Ad Overlay -->
+
+  <div id="popupOverlay" class="popup-overlay" style="display:none;">
+    <div class="popup-box">
+      <button class="popup-close" id="popupClose" aria-label="閉じる">✕</button>
+      <div id="popupContent"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
