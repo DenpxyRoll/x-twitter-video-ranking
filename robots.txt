@@ -5,4 +5,4 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://denpxyroll.github.io/x-twitter-video-ranking/sitemap.xml
