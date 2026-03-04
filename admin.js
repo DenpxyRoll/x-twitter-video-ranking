@@ -63,39 +63,65 @@ function emptyData() {
 }
 
 // =============================================================
-//  data.json の読み込み（GitHub Pages から fetch）
+//  data.json の読み込み（GitHub API経由 → CDNキャッシュを回避）
 // =============================================================
 async function loadData() {
+  const settings = loadGithubSettings();
+  const { owner, repo, branch, pat } = settings;
+
+  // GitHub API経由で取得（CDNキャッシュなし・常に最新）
+  if (owner && repo && pat) {
+    try {
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/data.json?ref=${branch}`;
+      const res = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${pat}`,
+          'Accept': 'application/vnd.github+json',
+        }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        // Base64デコード
+        const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+        const parsed = JSON.parse(decoded);
+        return normalizeData(parsed);
+      }
+    } catch { /* フォールバックへ */ }
+  }
+
+  // フォールバック：GitHub Pages URLから取得
   try {
     const res = await fetch('data.json?_=' + Date.now());
     if (!res.ok) throw new Error('fetch failed');
     const parsed = await res.json();
-    const def = emptyData();
-
-    CATEGORIES.forEach(c => {
-      if (!parsed[c.key]) parsed[c.key] = def[c.key];
-      while (parsed[c.key].length < RANK_COUNT) parsed[c.key].push(emptyVideoEntry());
-      parsed[c.key] = parsed[c.key].map(e => ({ ...emptyVideoEntry(), ...e }));
-    });
-
-    if (!parsed.banners) parsed.banners = def.banners;
-    parsed.banners.topRight = { ...emptyBannerSlot(), ...parsed.banners.topRight };
-    parsed.banners.bottomCenter = { ...emptyBannerSlot(), ...parsed.banners.bottomCenter };
-    parsed.banners.popup = { ...def.banners.popup, ...parsed.banners.popup };
-    if (!parsed.banners.inline || parsed.banners.inline.length < INLINE_SETS) {
-      parsed.banners.inline = Array.from({ length: INLINE_SETS }, (_, i) =>
-        parsed.banners.inline?.[i]
-          ? {
-            left: { ...emptyBannerSlot(), ...parsed.banners.inline[i].left },
-            right: { ...emptyBannerSlot(), ...parsed.banners.inline[i].right }
-          }
-          : emptyInlineSet()
-      );
-    }
-    return parsed;
+    return normalizeData(parsed);
   } catch {
     return emptyData();
   }
+}
+
+function normalizeData(parsed) {
+  const def = emptyData();
+  CATEGORIES.forEach(c => {
+    if (!parsed[c.key]) parsed[c.key] = def[c.key];
+    while (parsed[c.key].length < RANK_COUNT) parsed[c.key].push(emptyVideoEntry());
+    parsed[c.key] = parsed[c.key].map(e => ({ ...emptyVideoEntry(), ...e }));
+  });
+  if (!parsed.banners) parsed.banners = def.banners;
+  parsed.banners.topRight = { ...emptyBannerSlot(), ...parsed.banners.topRight };
+  parsed.banners.bottomCenter = { ...emptyBannerSlot(), ...parsed.banners.bottomCenter };
+  parsed.banners.popup = { ...def.banners.popup, ...parsed.banners.popup };
+  if (!parsed.banners.inline || parsed.banners.inline.length < INLINE_SETS) {
+    parsed.banners.inline = Array.from({ length: INLINE_SETS }, (_, i) =>
+      parsed.banners.inline?.[i]
+        ? {
+          left: { ...emptyBannerSlot(), ...parsed.banners.inline[i].left },
+          right: { ...emptyBannerSlot(), ...parsed.banners.inline[i].right }
+        }
+        : emptyInlineSet()
+    );
+  }
+  return parsed;
 }
 
 // =============================================================
