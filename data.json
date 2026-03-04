@@ -874,12 +874,12 @@
       },
       {
         "left": {
-          "enabled": false,
-          "htmlCode": ""
+          "enabled": true,
+          "htmlCode": "<a rel=\"noopener\" href=\"https://www.dlsite.com/soft/?utm_medium=affiliate&utm_campaign=bnlink&utm_content=bn_sp_300_250_dojin_01.jpg\" target=\"_blank\"><img src=\"https://www.dlsite.com/img/female/dojin/bn_sp_300_250_dojin_01.jpg\" alt=\"PCゲーム、PCソフトのダウンロードショップ - DLsite Soft\" width=\"300\" height=\"250\" border=\"0\" /></a>"
         },
         "right": {
           "enabled": false,
-          "htmlCode": ""
+          "htmlCode": "<a rel=\"noopener\" href=\"https://www.dlsite.com/soft/?utm_medium=affiliate&utm_campaign=bnlink&utm_content=bn_sp_300_250_dojin_01.jpg\" target=\"_blank\"><img src=\"https://www.dlsite.com/img/male/dojin/bn_sp_300_250_dojin_01.jpg\" alt=\"PCゲーム、PCソフトのダウンロードショップ - DLsite Soft\" width=\"300\" height=\"250\" border=\"0\" /></a>"
         }
       },
       {
