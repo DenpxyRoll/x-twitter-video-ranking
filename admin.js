@@ -1,12 +1,9 @@
 // =============================================================
 //  ハッシュ化された管理者パスワード（SHA-256）
-//  元のパスワードはソースコードからは見えません。
-//  変更方法: https://emn178.github.io/online-tools/sha256.html で
-//  新パスワードを入力→ハッシュ値をコピーして下の値を書き換えてください。
+//  変更方法: https://emn178.github.io/online-tools/sha256.html
 // =============================================================
 const ADMIN_PASSWORD_HASH = '8d16af78755e40dc37eb58e0bd4540d416b34bd2f56b5b1a79935ac49c004893';
 
-// SHA-256ハッシュ生成関数
 async function sha256(str) {
   const buf = new TextEncoder().encode(str);
   const hash = await crypto.subtle.digest('SHA-256', buf);
@@ -21,7 +18,21 @@ const CATEGORIES = [
 ];
 const RANK_COUNT = 30;
 const INLINE_SETS = 6;
-const STORAGE_KEY = 'tvRankingData';
+const GITHUB_SETTINGS_KEY = 'tvGithubSettings';
+
+// =============================================================
+//  GitHub設定の読み書き（localStorageに保存）
+// =============================================================
+function loadGithubSettings() {
+  try {
+    const raw = localStorage.getItem(GITHUB_SETTINGS_KEY);
+    return raw ? JSON.parse(raw) : { owner: 'DenpxyRoll', repo: '', branch: 'main', pat: '' };
+  } catch { return { owner: 'DenpxyRoll', repo: '', branch: 'main', pat: '' }; }
+}
+
+function saveGithubSettings(settings) {
+  localStorage.setItem(GITHUB_SETTINGS_KEY, JSON.stringify(settings));
+}
 
 // =============================================================
 //  データ初期化
@@ -30,7 +41,7 @@ function emptyVideoEntry() {
   return { xUrl: '', previewSrc: '', user: '', startTime: '', endTime: '' };
 }
 function emptyBannerSlot() {
-  return { htmlCode: '', enabled: true };
+  return { htmlCode: '', enabled: false };
 }
 function emptyInlineSet() {
   return { left: emptyBannerSlot(), right: emptyBannerSlot() };
@@ -51,11 +62,14 @@ function emptyData() {
   return d;
 }
 
-function loadData() {
+// =============================================================
+//  data.json の読み込み（GitHub Pages から fetch）
+// =============================================================
+async function loadData() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return emptyData();
-    const parsed = JSON.parse(raw);
+    const res = await fetch('data.json?_=' + Date.now());
+    if (!res.ok) throw new Error('fetch failed');
+    const parsed = await res.json();
     const def = emptyData();
 
     CATEGORIES.forEach(c => {
@@ -84,8 +98,59 @@ function loadData() {
   }
 }
 
-function saveData(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+// =============================================================
+//  GitHub API で data.json を更新
+// =============================================================
+async function saveDataToGitHub(dataObj) {
+  const settings = loadGithubSettings();
+  const { owner, repo, branch, pat } = settings;
+
+  if (!owner || !repo || !pat) {
+    throw new Error('GitHub設定（リポジトリ名・PAT）が未入力です。\n画面上の「GitHub設定」欄を入力してください。');
+  }
+
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/data.json`;
+
+  // 現在のファイルのSHAを取得（更新に必要）
+  let sha = null;
+  try {
+    const getRes = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${pat}`,
+        'Accept': 'application/vnd.github+json',
+      }
+    });
+    if (getRes.ok) {
+      const getJson = await getRes.json();
+      sha = getJson.sha;
+    }
+  } catch { /* ファイルが存在しない場合は新規作成 */ }
+
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(dataObj, null, 2))));
+
+  const body = {
+    message: `[管理画面] data.json を更新 ${new Date().toLocaleString('ja-JP')}`,
+    content,
+    branch,
+    ...(sha ? { sha } : {}),
+  };
+
+  const putRes = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${pat}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!putRes.ok) {
+    const errJson = await putRes.json().catch(() => ({}));
+    throw new Error(`GitHub APIエラー: ${putRes.status} ${errJson.message || ''}`);
+  }
+
+  return await putRes.json();
 }
 
 // =============================================================
@@ -103,7 +168,7 @@ async function tryLogin() {
     loginScreen.style.display = 'none';
     adminApp.style.display = 'block';
     sessionStorage.setItem('adminLoggedIn', '1');
-    renderCurrentTab();
+    await initAdmin();
   } else {
     loginError.style.display = 'block';
     pwInput.value = '';
@@ -112,14 +177,30 @@ async function tryLogin() {
 }
 loginBtn.addEventListener('click', tryLogin);
 pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
 if (sessionStorage.getItem('adminLoggedIn') === '1') {
   loginScreen.style.display = 'none';
   adminApp.style.display = 'block';
+  initAdmin();
 }
+
 document.getElementById('logoutBtn').addEventListener('click', () => {
   sessionStorage.removeItem('adminLoggedIn');
   location.reload();
 });
+
+// =============================================================
+//  初期化（ログイン後）
+// =============================================================
+let data = emptyData();
+
+async function initAdmin() {
+  showToast('⏳ データを読み込み中...');
+  data = await loadData();
+  renderGithubSettings();
+  renderCurrentTab();
+  showToast('✅ データを読み込みました！');
+}
 
 // =============================================================
 //  タブ切り替え
@@ -145,7 +226,7 @@ modeTabs.forEach(tab => {
     tab.classList.add('active');
     currentMode = tab.dataset.mode;
     const catRow = document.getElementById('catTabRow');
-    catRow.style.display = (currentMode === 'banners') ? 'none' : 'flex';
+    catRow.style.display = (currentMode === 'banners' || currentMode === 'github') ? 'none' : 'flex';
     renderCurrentTab();
   });
 });
@@ -154,11 +235,46 @@ modeTabs.forEach(tab => {
 //  描画
 // =============================================================
 const rankList = document.getElementById('rankList');
-let data = loadData();
 
 function renderCurrentTab() {
   if (currentMode === 'videos') renderVideos();
-  else renderBanners();
+  else if (currentMode === 'banners') renderBanners();
+  else if (currentMode === 'github') renderGithubSettings();
+}
+
+/* ---- GitHub設定タブ ---- */
+function renderGithubSettings() {
+  const settings = loadGithubSettings();
+  rankList.innerHTML = `
+    <div class="banner-section" style="border:2px solid #1d9bf0;">
+      <h3 class="banner-title">⚙️ GitHub設定</h3>
+      <p style="font-size:12px;color:#666;margin-bottom:16px;">
+        管理画面で「保存する」を押すと、GitHubの <code>data.json</code> が自動更新されます。<br>
+        PATは <a href="https://github.com/settings/tokens" target="_blank" style="color:#1d9bf0;">github.com/settings/tokens</a> で作成してください（権限：Contents Read & Write）。
+      </p>
+      <div class="banner-fields">
+        <label>GitHubユーザー名</label>
+        <input type="text" id="ghOwner" value="${esc(settings.owner)}" placeholder="DenpxyRoll" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font);" />
+        <label>リポジトリ名</label>
+        <input type="text" id="ghRepo" value="${esc(settings.repo)}" placeholder="x-twitter-video-ranking" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font);" />
+        <label>ブランチ名（通常は main）</label>
+        <input type="text" id="ghBranch" value="${esc(settings.branch)}" placeholder="main" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font);" />
+        <label>Personal Access Token（PAT）</label>
+        <input type="password" id="ghPat" value="${esc(settings.pat)}" placeholder="ghp_xxxxxxxxxxxx" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font);" />
+        <button id="saveGhBtn" style="margin-top:8px;background:#1d9bf0;color:#fff;border:none;border-radius:999px;padding:9px 24px;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;">設定を保存</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('saveGhBtn').addEventListener('click', () => {
+    const s = {
+      owner: document.getElementById('ghOwner').value.trim(),
+      repo: document.getElementById('ghRepo').value.trim(),
+      branch: document.getElementById('ghBranch').value.trim() || 'main',
+      pat: document.getElementById('ghPat').value.trim(),
+    };
+    saveGithubSettings(s);
+    showToast('✅ GitHub設定を保存しました！');
+  });
 }
 
 /* ---- 通常動画行 ---- */
@@ -221,7 +337,6 @@ function renderVideos() {
     if (field === 'xUrl') refreshStatus(rankList, idx, val);
   });
 
-  // 自動取得ボタン
   rankList.querySelectorAll('.fetch-btn').forEach(btn => {
     btn.addEventListener('click', () => fetchVideoUrl(parseInt(btn.dataset.fetchIndex, 10)));
   });
@@ -232,12 +347,10 @@ async function fetchVideoUrl(idx) {
   const xUrl = data[currentCat][idx].xUrl.trim();
   if (!xUrl) { alert('先に X の投稿 URL を入力してください。'); return; }
 
-  // ツイートIDを抽出
   const match = xUrl.match(/status\/([0-9]+)/);
   if (!match) { alert('正しい X の投稿 URL を入力してください。'); return; }
   const tweetId = match[1];
 
-  // ボタンをロード中に変更
   const rows = rankList.querySelectorAll('.rank-row');
   const fetchBtn = rows[idx]?.querySelector('.fetch-btn');
   if (fetchBtn) { fetchBtn.textContent = '取得中...'; fetchBtn.disabled = true; }
@@ -246,7 +359,6 @@ async function fetchVideoUrl(idx) {
     const res = await fetch(`https://api.vxtwitter.com/Twitter/status/${tweetId}`);
     const json = await res.json();
 
-    // 動画 URL を探す
     const media = json.media_extended || [];
     const video = media.find(m => m.type === 'video' || m.type === 'gif');
     const videoUrl = video?.url || '';
@@ -256,18 +368,14 @@ async function fetchVideoUrl(idx) {
       return;
     }
 
-    // 引数を除くpure URL に整形
     const pureUrl = videoUrl.split('?')[0];
-
-    // dataにセット
     data[currentCat][idx].previewSrc = pureUrl;
 
-    // 入力欄を更新
     const previewInput = rows[idx]?.querySelector('.preview-input');
     if (previewInput) previewInput.value = pureUrl;
 
     showToast('✅ 動画 URL を取得しました！');
-  } catch (err) {
+  } catch {
     alert('取得に失敗しました。ネットワークを確認してください。');
   } finally {
     if (fetchBtn) { fetchBtn.textContent = '⚡ 取得'; fetchBtn.disabled = false; }
@@ -276,10 +384,8 @@ async function fetchVideoUrl(idx) {
 
 /* ---- バナー設定 ---- */
 function renderBanners() {
-
   rankList.innerHTML = '';
 
-  // ポップアップ広告
   const pu = data.banners.popup;
   rankList.innerHTML += `
     <div class="banner-section" style="border: 2px solid #a855f7;">
@@ -297,11 +403,9 @@ function renderBanners() {
     </div>
   `;
 
-  // 浮きバナー2つ
   rankList.innerHTML += bannerSlotHtml('floating-tr', '📌 右上バナー（固定表示）', data.banners.topRight);
   rankList.innerHTML += bannerSlotHtml('floating-bc', '📌 中央下バナー（固定表示）', data.banners.bottomCenter);
 
-  // インラインバナー 6セット
   for (let i = 0; i < INLINE_SETS; i++) {
     const rankEnd = (i + 1) * 5;
     const set = data.banners.inline[i];
@@ -359,17 +463,14 @@ function bindBannerInputs() {
 }
 
 function syncAllBanners() {
-  // popup
   const puHtml = rankList.querySelector('textarea[data-key="popup-html"]');
   const puDelay = document.getElementById('popupDelay');
   const puEnabled = rankList.querySelector('input[data-key-check="popup-enabled"]');
   if (puHtml) data.banners.popup.htmlCode = puHtml.value;
   if (puDelay) data.banners.popup.delay = parseFloat(puDelay.value) || 0;
   if (puEnabled) data.banners.popup.enabled = puEnabled.checked;
-  // floating
   setFromKey('floating-tr', (cfg, v, c) => { data.banners.topRight.htmlCode = v; data.banners.topRight.enabled = c; });
   setFromKey('floating-bc', (cfg, v, c) => { data.banners.bottomCenter.htmlCode = v; data.banners.bottomCenter.enabled = c; });
-  // inline
   for (let i = 0; i < INLINE_SETS; i++) {
     setFromKey(`inline-${i}-left`, (cfg, v, c) => { data.banners.inline[i].left.htmlCode = v; data.banners.inline[i].left.enabled = c; });
     setFromKey(`inline-${i}-right`, (cfg, v, c) => { data.banners.inline[i].right.htmlCode = v; data.banners.inline[i].right.enabled = c; });
@@ -383,7 +484,7 @@ function setFromKey(key, setter) {
 }
 
 // =============================================================
-//  共通入力バインド（動画行用）
+//  共通入力バインド
 // =============================================================
 function bindInputs(container, onChange) {
   container.querySelectorAll('input[data-field]').forEach(input => {
@@ -408,12 +509,25 @@ function refreshStatus(container, idx, val) {
 }
 
 // =============================================================
-//  保存
+//  保存（GitHub API）
 // =============================================================
-document.getElementById('saveAllBtn').addEventListener('click', () => {
+document.getElementById('saveAllBtn').addEventListener('click', async () => {
   if (currentMode === 'banners') syncAllBanners();
-  saveData(data);
-  showToast('✅ 保存しました！');
+
+  const btn = document.getElementById('saveAllBtn');
+  btn.textContent = '⏳ 保存中...';
+  btn.disabled = true;
+
+  try {
+    await saveDataToGitHub(data);
+    showToast('✅ GitHubに保存しました！反映まで数秒お待ちください。');
+  } catch (err) {
+    showToast('❌ 保存失敗: ' + err.message);
+    alert('保存に失敗しました。\n\n' + err.message + '\n\n「GitHub設定」タブでリポジトリ名とPATを確認してください。');
+  } finally {
+    btn.textContent = '💾 保存する';
+    btn.disabled = false;
+  }
 });
 
 // =============================================================
@@ -423,7 +537,7 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 function esc(str) {
