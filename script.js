@@ -292,13 +292,20 @@ function startPreview(uid) {
     videoEl.play().catch(() => { });
     if (overlay) overlay.classList.add('hidden');
 
-    const t0 = performance.now();
+    let loopT0 = performance.now();
     function tick(now) {
-        const elapsed = now - t0;
+        const elapsed = now - loopT0;
         const progress = Math.min(elapsed / dur, 1) * 100;
         if (bar) bar.style.width = progress + '%';
-        if (elapsed < dur) { it.rafId = requestAnimationFrame(tick); }
-        else { stopPreview(uid); }
+        if (elapsed < dur) {
+            it.rafId = requestAnimationFrame(tick);
+        } else {
+            // ループ：動画を開始位置に戻してRAFをリセット
+            videoEl.currentTime = startT;
+            loopT0 = performance.now();
+            if (bar) bar.style.width = '0%';
+            it.rafId = requestAnimationFrame(tick);
+        }
     }
     it.rafId = requestAnimationFrame(tick);
 }
