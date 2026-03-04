@@ -191,7 +191,7 @@ function buildCard(video, uid) {
 
     card.innerHTML = `
     <div class="video-thumb">
-      ${hasPreview ? `<video src="${e(video.previewSrc)}" muted playsinline preload="none"></video>` : ''}
+      ${hasPreview ? `<video src="${e(video.previewSrc)}" muted playsinline loop preload="none"></video>` : ''}
       <div class="play-overlay" id="po-${uid}">
         <div class="play-icon">
           <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
