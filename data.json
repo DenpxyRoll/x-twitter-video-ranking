@@ -849,7 +849,7 @@
   ],
   "banners": {
     "topRight": {
-      "htmlCode": "<a href=\"https://clear-tv.com/Click2/1006007-6-239789\" target=\"_blank\"><img src=\"https://pixelarchivenow.com/image/carib/06-150-01.jpg\" border=\"0\"></a>",
+      "htmlCode": "<IFRAME SRC='https://gallerieshub.com/carib_free/index6.html?affid=239789' width=180 height=1030 frameborder='no' scrolling='no' title='カリビアンコムバナー'></IFRAME>",
       "enabled": true
     },
     "bottomCenter": {
