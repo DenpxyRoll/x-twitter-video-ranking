@@ -1,14 +1,14 @@
 // =============================================================
 //  公開側スクリプト — Twitter動画保存ランキング
+//  データ取得: data.json (GitHub Pages上のファイル)
 // =============================================================
 
 const PREVIEW_SECONDS_DEFAULT = 3;
-const STORAGE_KEY = 'tvRankingData';
 const RANK_COUNT = 30;
 const INLINE_SETS = 6;
 
 // =============================================================
-//  ★ デフォルト表示動画（管理画面で上書きされるまで表示）
+//  ★ デフォルト表示動画（data.jsonが空・取得失敗時に表示）
 // =============================================================
 const DEFAULT_VIDEOS = [
     { xUrl: 'https://x.com/NASA/status/1234567890', previewSrc: 'https://www.w3schools.com/html/mov_bbb.mp4', user: '@travelwith_yuki', avatar: 'https://i.pravatar.cc/150?img=1', caption: '夕暮れの海岸線 🌅 #travel #sunset', views: '248K', likes: '18.2K' },
@@ -44,20 +44,28 @@ const DEFAULT_VIDEOS = [
 ];
 
 // =============================================================
-//  localStorage 読み込み
+//  data.json の読み込み（GitHub Pages上のファイルをfetch）
 // =============================================================
-function loadStoredData() {
-    try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; }
-    catch { return null; }
+let _cachedData = null;
+
+async function loadData() {
+    if (_cachedData) return _cachedData;
+    try {
+        const res = await fetch('data.json?_=' + Date.now());
+        if (!res.ok) throw new Error('fetch failed');
+        _cachedData = await res.json();
+        return _cachedData;
+    } catch {
+        return null;
+    }
 }
 
 function getVideos(cat, stored) {
     const entries = stored?.[cat];
     if (entries) {
-        return entries
+        const filtered = entries
             .map((e, i) => {
                 if (!e.xUrl?.trim()) return null;
-                // XのURLからユーザー名を自動抽出 (手動入力があればそちらを優先)
                 const urlMatch = e.xUrl.match(/(?:x\.com|twitter\.com)\/([^/]+)\/status/);
                 const autoUser = urlMatch ? '@' + urlMatch[1] : '@unknown';
                 return {
@@ -72,7 +80,7 @@ function getVideos(cat, stored) {
                 };
             })
             .filter(Boolean);
-
+        if (filtered.length > 0) return filtered;
     }
     return DEFAULT_VIDEOS.map((v, i) => ({
         rank: i + 1, ...v,
@@ -99,7 +107,7 @@ function initBanner(id, cfg) {
     el.style.display = 'block';
     el.innerHTML = cfg.htmlCode + `<button class="banner-close" onclick="this.parentElement.style.display='none'" aria-label="閉じる">✕</button>`;
 }
-// ポップアップ: ページ初回ロード時のみ表示
+
 // =============================================================
 //  年齢確認ゲート
 // =============================================================
@@ -109,13 +117,11 @@ function initBanner(id, cfg) {
     const btnNo = document.getElementById('ageNo');
     if (!gate) return;
 
-    // 同一セッションで確認済みならすぐ非表示
     if (sessionStorage.getItem('ageVerified') === '1') {
         gate.style.display = 'none';
         return;
     }
 
-    // 「はい」→ゲートを閉じてサイトを表示
     btnYes?.addEventListener('click', () => {
         sessionStorage.setItem('ageVerified', '1');
         gate.style.opacity = '0';
@@ -123,7 +129,6 @@ function initBanner(id, cfg) {
         setTimeout(() => { gate.style.display = 'none'; }, 300);
     });
 
-    // 「いいえ」→ 別ページへ
     btnNo?.addEventListener('click', () => {
         location.href = 'https://www.google.com';
     });
@@ -132,7 +137,7 @@ function initBanner(id, cfg) {
 let _popupShown = false;
 
 function initPopup(cfg) {
-    if (_popupShown) return;       // フィルター切替時は再表示しない
+    if (_popupShown) return;
     const overlay = document.getElementById('popupOverlay');
     const content = document.getElementById('popupContent');
     if (!overlay || !content || !cfg?.enabled || !cfg.htmlCode?.trim()) return;
@@ -144,7 +149,6 @@ function initPopup(cfg) {
         _popupShown = true;
     }, delay);
 
-    // 閉じる操作
     document.getElementById('popupClose')?.addEventListener('click', () => {
         overlay.style.display = 'none';
     });
@@ -159,7 +163,7 @@ function buildInlineBannerRow(setIndex, stored) {
     const leftHtml = set?.left?.enabled && set?.left?.htmlCode?.trim() ? set.left.htmlCode : '';
     const rightHtml = set?.right?.enabled && set?.right?.htmlCode?.trim() ? set.right.htmlCode : '';
 
-    if (!leftHtml && !rightHtml) return null;  // 両方未設定なら挿入しない
+    if (!leftHtml && !rightHtml) return null;
 
     const row = document.createElement('div');
     row.className = 'inline-banner-row';
@@ -219,35 +223,33 @@ function buildCard(video, uid) {
 }
 
 // =============================================================
-//  グリッド描画
-//  ※ インラインバナーはグリッドの外（span要素として全幅に）
+//  グリッド描画（非同期）
 // =============================================================
-const gridWrapper = document.getElementById('gridWrapper'); // outer container
-const grid = document.getElementById('videoGrid');
+const gridWrapper = document.getElementById('gridWrapper');
 let cardMap = {};
 
-function renderGrid(cat) {
+async function renderGrid(cat) {
     Object.values(cardMap).forEach(({ card }) => observer.unobserve(card));
-    gridWrapper.innerHTML = '';
+    gridWrapper.innerHTML = '<p class="empty-msg">読み込み中...</p>';
     cardMap = {};
 
-    const stored = loadStoredData();
+    const stored = await loadData();
     initFloatingBanners(stored);
 
     const videos = getVideos(cat, stored);
+
+    gridWrapper.innerHTML = '';
 
     if (videos.length === 0) {
         gridWrapper.innerHTML = '<p class="empty-msg">この期間の動画はまだありません。</p>';
         return;
     }
 
-    // ビデオを5本ずつグループ化してバナー行を挿入
     for (let groupIdx = 0; groupIdx < INLINE_SETS; groupIdx++) {
         const start = groupIdx * 5;
         const chunk = videos.slice(start, start + 5);
         if (chunk.length === 0) break;
 
-        // この5本のグリッド
         const subGrid = document.createElement('div');
         subGrid.className = 'video-grid';
         gridWrapper.appendChild(subGrid);
@@ -266,7 +268,6 @@ function renderGrid(cat) {
             observer.observe(card);
         });
 
-        // バナー行（このグループの後）
         const bannerRow = buildInlineBannerRow(groupIdx, stored);
         if (bannerRow) gridWrapper.appendChild(bannerRow);
     }
@@ -285,7 +286,6 @@ function startPreview(uid) {
     const endT = video.endTime ?? startT + PREVIEW_SECONDS_DEFAULT;
     const dur = Math.max((endT - startT) * 1000, 500);
 
-    // preload="none" のため、再生前にロードをトリガーする
     videoEl.preload = 'auto';
     videoEl.load();
     videoEl.currentTime = startT;
@@ -300,7 +300,6 @@ function startPreview(uid) {
         if (elapsed < dur) {
             it.rafId = requestAnimationFrame(tick);
         } else {
-            // ループ：動画を開始位置に戻してRAFをリセット
             videoEl.currentTime = startT;
             loopT0 = performance.now();
             if (bar) bar.style.width = '0%';
@@ -347,18 +346,16 @@ gridWrapper.addEventListener('click', evt => {
     if (!card) return;
     const url = card.dataset.xUrl;
     if (url) {
-        // GA4 カスタムイベント送信
         if (typeof gtag !== 'undefined') {
             gtag('event', 'video_click', {
                 rank: card.dataset.uid,
                 video_url: url,
-                category: document.querySelector('.filter-btn.active')?.dataset.filter || 'rising',
+                category: document.querySelector('.filter-btn.active')?.dataset.filter || 'today',
             });
         }
         window.open(url, '_blank', 'noopener,noreferrer');
     }
 });
-
 
 // =============================================================
 //  フィルターボタン
