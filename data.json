@@ -1,46 +1,18 @@
 {
   "today": [
     {
-      "xUrl": "https://x.com/subsubsub_22/status/2029155411216220189",
-      "previewSrc": "https://github.com/DenpxyRoll/x-twitter-video-ranking/raw/refs/heads/main/videos/today01.mp4",
+      "xUrl": "",
+      "previewSrc": "",
       "user": "",
       "startTime": 0,
-      "endTime": "7"
+      "endTime": 3
     },
     {
-      "xUrl": "https://x.com/yuriyuri020202U/status/2028805933955269106",
-      "previewSrc": "https://github.com/DenpxyRoll/x-twitter-video-ranking/raw/refs/heads/main/videos/today02.mp4",
+      "xUrl": "",
+      "previewSrc": "",
       "user": "",
       "startTime": 0,
-      "endTime": "7"
-    },
-    {
-      "xUrl": "https://x.com/lilpie___/status/2028588236302659713",
-      "previewSrc": "https://github.com/DenpxyRoll/x-twitter-video-ranking/raw/refs/heads/main/videos/today03.mp4",
-      "user": "",
-      "startTime": 0,
-      "endTime": "7"
-    },
-    {
-      "xUrl": "https://x.com/shiro_kundayo/status/1996522970312036435",
-      "previewSrc": "https://github.com/DenpxyRoll/x-twitter-video-ranking/raw/refs/heads/main/videos/today04.mp4",
-      "user": "",
-      "startTime": 0,
-      "endTime": "7"
-    },
-    {
-      "xUrl": "https://x.com/na__tu__sb/status/2002665349066731694",
-      "previewSrc": "https://github.com/DenpxyRoll/x-twitter-video-ranking/raw/refs/heads/main/videos/today05.mp4",
-      "user": "",
-      "startTime": 0,
-      "endTime": "7"
-    },
-    {
-      "xUrl": "https://x.com/hime_tsu/status/2029050133380514158",
-      "previewSrc": "https://github.com/DenpxyRoll/x-twitter-video-ranking/raw/refs/heads/main/videos/today06.mp4",
-      "user": "",
-      "startTime": 0,
-      "endTime": "6"
+      "endTime": 3
     },
     {
       "xUrl": "",
@@ -57,8 +29,36 @@
       "endTime": 3
     },
     {
-      "xUrl": "https://x.com/Yuuuu_suke1/status/2029118163842154872",
-      "previewSrc": "https://github.com/DenpxyRoll/x-twitter-video-ranking/raw/refs/heads/main/videos/today09.mp4",
+      "xUrl": "",
+      "previewSrc": "",
+      "user": "",
+      "startTime": 0,
+      "endTime": 3
+    },
+    {
+      "xUrl": "",
+      "previewSrc": "",
+      "user": "",
+      "startTime": 0,
+      "endTime": 3
+    },
+    {
+      "xUrl": "",
+      "previewSrc": "",
+      "user": "",
+      "startTime": 0,
+      "endTime": 3
+    },
+    {
+      "xUrl": "",
+      "previewSrc": "",
+      "user": "",
+      "startTime": 0,
+      "endTime": 3
+    },
+    {
+      "xUrl": "",
+      "previewSrc": "",
       "user": "",
       "startTime": 0,
       "endTime": 3
@@ -849,12 +849,12 @@
   ],
   "banners": {
     "topRight": {
-      "htmlCode": "<IFRAME SRC='https://gallerieshub.com/carib_free/index6.html?affid=239789' width=180 height=1030 frameborder='no' scrolling='no' title='カリビアンコムバナー'></IFRAME>",
-      "enabled": true
+      "htmlCode": "",
+      "enabled": false
     },
     "bottomCenter": {
-      "htmlCode": "<a href=\"https://clear-tv.com/Click/2173005-173-239789\" target=\"_blank\"><img src=\"https://pixelarchivenow.com/image/ccg/173-468-01.gif\" border=\"0\"></a>",
-      "enabled": true
+      "htmlCode": "",
+      "enabled": false
     },
     "popup": {
       "htmlCode": "",
@@ -864,22 +864,22 @@
     "inline": [
       {
         "left": {
-          "enabled": true,
-          "htmlCode": "<a rel=\"noopener\" href=\"https://www.dlsite.com/soft/?utm_medium=affiliate&utm_campaign=bnlink&utm_content=bn_sp_300_250_dojin_01.gif\" target=\"_blank\"><img src=\"https://www.dlsite.com/img/male/dojin/bn_sp_300_250_dojin_01.gif\" alt=\"PCゲーム、PCソフトのダウンロードショップ - DLsite Soft\" width=\"300\" height=\"250\" border=\"0\" /></a>"
+          "enabled": false,
+          "htmlCode": ""
         },
         "right": {
-          "enabled": true,
-          "htmlCode": "<a rel=\"noopener\" href=\"https://www.dlsite.com/soft/?utm_medium=affiliate&utm_campaign=bnlink&utm_content=bn_sp_300_250_eng_01.gif\" target=\"_blank\"><img src=\"https://www.dlsite.com/img/abroad/eng/bn_sp_300_250_eng_01.gif\" alt=\"PCゲーム、PCソフトのダウンロードショップ - DLsite Soft\" width=\"300\" height=\"250\" border=\"0\" /></a>"
+          "enabled": false,
+          "htmlCode": ""
         }
       },
       {
         "left": {
-          "enabled": true,
-          "htmlCode": "<a rel=\"noopener\" href=\"https://www.dlsite.com/soft/?utm_medium=affiliate&utm_campaign=bnlink&utm_content=bn_sp_300_250_dojin_01.jpg\" target=\"_blank\"><img src=\"https://www.dlsite.com/img/female/dojin/bn_sp_300_250_dojin_01.jpg\" alt=\"PCゲーム、PCソフトのダウンロードショップ - DLsite Soft\" width=\"300\" height=\"250\" border=\"0\" /></a>"
+          "enabled": false,
+          "htmlCode": ""
         },
         "right": {
           "enabled": false,
-          "htmlCode": "<a rel=\"noopener\" href=\"https://www.dlsite.com/soft/?utm_medium=affiliate&utm_campaign=bnlink&utm_content=bn_sp_300_250_dojin_01.jpg\" target=\"_blank\"><img src=\"https://www.dlsite.com/img/male/dojin/bn_sp_300_250_dojin_01.jpg\" alt=\"PCゲーム、PCソフトのダウンロードショップ - DLsite Soft\" width=\"300\" height=\"250\" border=\"0\" /></a>"
+          "htmlCode": ""
         }
       },
       {
