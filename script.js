@@ -44,7 +44,18 @@ const DEFAULT_VIDEOS = [
 ];
 
 // =============================================================
-//  data.json の読み込み（GitHub Pages上のファイルをfetch）
+//  GitHub blob URL → raw URL 自動変換
+// =============================================================
+function toRawUrl(url) {
+    if (!url) return url;
+    return url.replace(
+        /https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.*)/,
+        'https://raw.githubusercontent.com/$1/$2/$3/$4'
+    );
+}
+
+// =============================================================
+//  data.json の読み込み
 // =============================================================
 let _cachedData = null;
 
@@ -71,7 +82,7 @@ function getVideos(cat, stored) {
                 return {
                     rank: i + 1,
                     xUrl: e.xUrl,
-                    previewSrc: e.previewSrc || '',
+                    previewSrc: toRawUrl(e.previewSrc || ''),
                     user: e.user?.trim() || autoUser,
                     avatar: '',
                     caption: '', views: '', likes: '',
