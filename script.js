@@ -87,7 +87,9 @@ function getVideos(cat, stored) {
                     avatar: '',
                     caption: '', views: '', likes: '',
                     startTime: parseFloat(e.startTime) || 0,
-                    endTime: parseFloat(e.endTime) || (parseFloat(e.startTime) || 0) + PREVIEW_SECONDS_DEFAULT,
+                    endTime: (e.endTime !== '' && e.endTime !== undefined && parseFloat(e.endTime) > 0)
+                        ? parseFloat(e.endTime)
+                        : null, // null = 動画全体をループ再生
                 };
             })
             .filter(Boolean);
@@ -294,8 +296,7 @@ function startPreview(uid) {
 
     const { videoEl, overlay, bar, video } = it;
     const startT = video.startTime ?? 0;
-    const endT = video.endTime ?? startT + PREVIEW_SECONDS_DEFAULT;
-    const dur = Math.max((endT - startT) * 1000, 500);
+    const endT = video.endTime; // null = 動画全体モード
 
     videoEl.preload = 'auto';
     videoEl.load();
@@ -303,21 +304,35 @@ function startPreview(uid) {
     videoEl.play().catch(() => { });
     if (overlay) overlay.classList.add('hidden');
 
-    let loopT0 = performance.now();
-    function tick(now) {
-        const elapsed = now - loopT0;
-        const progress = Math.min(elapsed / dur, 1) * 100;
-        if (bar) bar.style.width = progress + '%';
-        if (elapsed < dur) {
-            it.rafId = requestAnimationFrame(tick);
-        } else {
-            videoEl.currentTime = startT;
-            loopT0 = performance.now();
-            if (bar) bar.style.width = '0%';
-            it.rafId = requestAnimationFrame(tick);
+    if (endT === null) {
+        // ── 全体再生モード: loop属性でループ、プログレスバーは実時間で更新 ──
+        function tickFull() {
+            if (videoEl.duration > 0) {
+                const progress = (videoEl.currentTime / videoEl.duration) * 100;
+                if (bar) bar.style.width = Math.min(progress, 100) + '%';
+            }
+            it.rafId = requestAnimationFrame(tickFull);
         }
+        it.rafId = requestAnimationFrame(tickFull);
+    } else {
+        // ── 指定時間モード: startTime〜endTime を繰り返す ──
+        const dur = Math.max((endT - startT) * 1000, 500);
+        let loopT0 = performance.now();
+        function tick(now) {
+            const elapsed = now - loopT0;
+            const progress = Math.min(elapsed / dur, 1) * 100;
+            if (bar) bar.style.width = progress + '%';
+            if (elapsed < dur) {
+                it.rafId = requestAnimationFrame(tick);
+            } else {
+                videoEl.currentTime = startT;
+                loopT0 = performance.now();
+                if (bar) bar.style.width = '0%';
+                it.rafId = requestAnimationFrame(tick);
+            }
+        }
+        it.rafId = requestAnimationFrame(tick);
     }
-    it.rafId = requestAnimationFrame(tick);
 }
 
 function stopPreview(uid) {
