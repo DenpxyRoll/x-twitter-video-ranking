@@ -849,7 +849,7 @@
   ],
   "banners": {
     "topRight": {
-      "htmlCode": "",
+      "htmlCode": "<IFRAME SRC='https://gallerieshub.com/carib_free/index6.html?affid=239789' width=180 height=1030 frameborder='no' scrolling='no' title='カリビアンコムバナー'></IFRAME>",
       "enabled": false
     },
     "bottomCenter": {
