@@ -874,8 +874,8 @@
       },
       {
         "left": {
-          "enabled": false,
-          "htmlCode": ""
+          "enabled": true,
+          "htmlCode": "<IFRAME SRC=\"https://pic-stash.com/index2.html?affid=239789\" width=\"300\" height=\"250\" frameborder=\"no\" scrolling=\"no\" title=\"バナー\"></IFRAME>"
         },
         "right": {
           "enabled": false,
