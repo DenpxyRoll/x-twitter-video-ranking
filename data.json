@@ -878,8 +878,8 @@
           "htmlCode": "<IFRAME SRC=\"https://pic-stash.com/index2.html?affid=239789\" width=\"300\" height=\"250\" frameborder=\"no\" scrolling=\"no\" title=\"バナー\"></IFRAME>"
         },
         "right": {
-          "enabled": false,
-          "htmlCode": ""
+          "enabled": true,
+          "htmlCode": "<ins class=\"widget-banner\"></ins><script class=\"widget-banner-script\" src=\"https://widget-view.dmm.co.jp/js/banner_placement.js?affiliate_id=ROUAI-002&banner_id=495_300_250\"></script>"
         }
       },
       {
