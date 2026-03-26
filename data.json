@@ -884,8 +884,8 @@
       },
       {
         "left": {
-          "enabled": false,
-          "htmlCode": ""
+          "enabled": true,
+          "htmlCode": "<iframe src=\"https://gallerieshub.com/carib/vb/index300x250en.html?affid=239789\" width=\"300\" height=\"250\" frameborder=\"no\" scrolling=\"no\"></iframe>"
         },
         "right": {
           "enabled": false,
