@@ -888,8 +888,8 @@
           "htmlCode": "<iframe src=\"https://gallerieshub.com/carib/vb/index300x250en.html?affid=239789\" width=\"300\" height=\"250\" frameborder=\"no\" scrolling=\"no\"></iframe>"
         },
         "right": {
-          "enabled": false,
-          "htmlCode": ""
+          "enabled": true,
+          "htmlCode": "<a href=\"https://clear-tv.com/Click2/1006021-6-239789\" target=\"_blank\"><img src=\"https://pixelarchivenow.com/image/carib/1006021.jpg\" border=\"0\"></a>"
         }
       },
       {
