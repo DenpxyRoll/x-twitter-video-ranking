@@ -390,15 +390,14 @@ body {
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   margin: 4px 0 8px;
-  flex-wrap: nowrap;
-  /* 横に並べる */
+  flex-wrap: wrap;
+  /* 行幅を超えたら折り返す（900pxバナーが縮小されないよう） */
 }
 
 .inline-banner-cell {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
-  /* flexアイテムが縮めるように */
-  max-width: 250px;
+  max-width: 960px;
   line-height: 0;
   overflow: hidden;
 }
@@ -406,7 +405,7 @@ body {
 /* アフィリエイトHTMLのimgタグにwidth属性があっても強制的に収める */
 .inline-banner-cell img {
   max-width: 100% !important;
-  width: 100% !important;
+  width: auto !important;
   height: auto !important;
   display: block;
   border-radius: 4px;
@@ -424,7 +423,7 @@ body {
   }
 
   .inline-banner-cell {
-    max-width: 160px;
+    max-width: 200px;
   }
 }
 
@@ -456,8 +455,9 @@ body {
 
 .banner-topright img,
 .banner-bottomcenter img {
-  width: 100%;
-  height: auto;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
   display: block;
 }
 
@@ -773,7 +773,7 @@ a.upload-btn {
   }
 
   .inline-banner-cell {
-    width: 140px;
-    max-width: 140px;
+    width: 160px;
+    max-width: 160px;
   }
 }
