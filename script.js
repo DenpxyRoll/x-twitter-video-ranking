@@ -50,7 +50,7 @@ function toRawUrl(url) {
     if (!url) return url;
     return url.replace(
         /https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.*)/,
-        'https://raw.githubusercontent.com/$1/$2/$3/$4'
+        'https://fetch('/data.json')/$1/$2/$3/$4'
     );
 }
 
