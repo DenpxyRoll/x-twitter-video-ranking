@@ -908,8 +908,8 @@
           "htmlCode": "<a href='https://clear-tv.com/Click2/1006033-6-239789' target='_blank' rel='noopener'><img src='https://pixelarchivenow.com/image/carib/1006033.jpg' border=0></a>"
         },
         "right": {
-          "enabled": false,
-          "htmlCode": ""
+          "enabled": true,
+          "htmlCode": "<iframe src=\"https://affi-ecp.heydouga.com/api/widget/?direction=horizontal&limit=3&picHeight=200&titleDisplayFlag=1&bgColor=ffffff&listType=ranking&affid=239789\" height=\"200\" style=\"width:100%; max-width:900px; border:none; overflow:hidden;\" scrolling=\"no\" title=\"Hey動画 ランキングバナー\"></iframe>"
         }
       },
       {
