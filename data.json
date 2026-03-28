@@ -904,8 +904,8 @@
       },
       {
         "left": {
-          "enabled": false,
-          "htmlCode": ""
+          "enabled": true,
+          "htmlCode": "<iframe width=\"640\" height=\"360\" src=\"https://adult.contents.fc2.com/embed/4868206?i=TXpneE5qY3pOelE9\" frameborder=\"0\" allowfullscreen></iframe>"
         },
         "right": {
           "enabled": false,
