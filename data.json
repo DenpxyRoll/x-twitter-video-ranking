@@ -909,7 +909,7 @@
         },
         "right": {
           "enabled": true,
-          "htmlCode": "<iframe src=\"https://affi-ecp.heydouga.com/api/widget/?direction=horizontal&limit=3&picHeight=200&titleDisplayFlag=1&bgColor=ffffff&listType=ranking&affid=239789\" height=\"200\" style=\"width:100%; max-width:900px; border:none; overflow:hidden;\" scrolling=\"no\" title=\"Hey動画 ランキングバナー\"></iframe>"
+          "htmlCode": "<a href=\"https://asp.m-live.jp/LiveChat/acs.php?si=jwt&pid=MLA5653\" target=\"_blank\"><img src=\"https://asp.m-live.jp/banner/jwt/img/imgcU7EkD.gif\" width=\"300\" height=\"250\" border=\"0\" alt=\"ジュエルライブ\"></a>"
         }
       },
       {
