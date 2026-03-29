@@ -365,11 +365,9 @@ function stopPreview(uid) {
     if (it.videoEl) {
         it.videoEl.pause();
         it.videoEl.currentTime = it.video.startTime ?? 0;
-        // 画面外はsrcをクリアしてメモリ解放（次回表示時に再ロード）
-        if (it.videoEl.src) {
-            it.videoEl.src = '';
-            it.videoEl.load();
-        }
+        // 画面外はsrcを完全除去してメモリ解放（次回表示時に再ロード）
+        it.videoEl.removeAttribute('src');
+        it.videoEl.load();
     }
     if (it.overlay) it.overlay.classList.remove('hidden');
     if (it.bar) it.bar.style.width = '0%';
