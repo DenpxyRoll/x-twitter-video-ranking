@@ -248,6 +248,10 @@ function buildCard(video, uid) {
 const gridWrapper = document.getElementById('gridWrapper');
 let cardMap = {};
 
+// 同時再生数の制限（PC:5 / スマホ:2）
+const MAX_PLAYING = ('ontouchstart' in window || navigator.maxTouchPoints > 0) ? 2 : 5;
+const playingQueue = []; // 再生中のuidを追加順に管理
+
 async function renderGrid(cat) {
     Object.values(cardMap).forEach(({ card }) => observer.unobserve(card));
     gridWrapper.innerHTML = '<p class="empty-msg">読み込み中...</p>';
@@ -315,6 +319,13 @@ function startPreview(uid) {
     videoEl.play().catch(() => { });
     if (overlay) overlay.classList.add('hidden');
 
+    // 再生キューに追加し、上限を超えたら最古の動画を停止
+    if (!playingQueue.includes(uid)) playingQueue.push(uid);
+    while (playingQueue.length > MAX_PLAYING) {
+        const oldest = playingQueue.shift();
+        if (oldest !== uid) stopPreview(oldest);
+    }
+
     if (endT === null) {
         // ── 全体再生モード: loop属性でループ、プログレスバーは実時間で更新 ──
         function tickFull() {
@@ -351,9 +362,20 @@ function stopPreview(uid) {
     if (!it) return;
     if (it.rafId) { cancelAnimationFrame(it.rafId); it.rafId = null; }
     if (it.timer) { clearTimeout(it.timer); it.timer = null; }
-    if (it.videoEl) { it.videoEl.pause(); it.videoEl.currentTime = it.video.startTime ?? 0; }
+    if (it.videoEl) {
+        it.videoEl.pause();
+        it.videoEl.currentTime = it.video.startTime ?? 0;
+        // 画面外はsrcをクリアしてメモリ解放（次回表示時に再ロード）
+        if (it.videoEl.src) {
+            it.videoEl.src = '';
+            it.videoEl.load();
+        }
+    }
     if (it.overlay) it.overlay.classList.remove('hidden');
     if (it.bar) it.bar.style.width = '0%';
+    // 再生キューから除去
+    const idx = playingQueue.indexOf(uid);
+    if (idx !== -1) playingQueue.splice(idx, 1);
 }
 
 // =============================================================
