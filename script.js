@@ -62,7 +62,7 @@ let _cachedData = null;
 async function loadData() {
     if (_cachedData) return _cachedData;
     try {
-        const res = await fetch('/data.json?_=' + Date.now());
+        const res = await fetch('https://raw.githubusercontent.com/DenpxyRoll/x-twitter-video-ranking/main/data.json');
         if (!res.ok) throw new Error('fetch failed');
         _cachedData = await res.json();
         return _cachedData;
