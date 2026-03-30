@@ -62,7 +62,7 @@ let _cachedData = null;
 async function loadData() {
     if (_cachedData) return _cachedData;
     try {
-        const res = await fetch('https://twvideo-rank.net/data.json?_=' + Date.now(), { cache: 'no-store' });
+        const res = await fetch('https://twvideo-rank.net/data.json?_=' + Date.now());
         if (!res.ok) throw new Error('fetch failed');
         _cachedData = await res.json();
         return _cachedData;
