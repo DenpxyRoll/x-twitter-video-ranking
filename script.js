@@ -130,13 +130,15 @@ function initBanner(id, cfg) {
     const btnNo = document.getElementById('ageNo');
     if (!gate) return;
 
-    if (sessionStorage.getItem('ageVerified') === '1') {
+    let verified = false;
+    try { verified = sessionStorage.getItem('ageVerified') === '1'; } catch {}
+    if (verified) {
         gate.style.display = 'none';
         return;
     }
 
     btnYes?.addEventListener('click', () => {
-        sessionStorage.setItem('ageVerified', '1');
+        try { sessionStorage.setItem('ageVerified', '1'); } catch {};
         gate.style.opacity = '0';
         gate.style.transition = 'opacity 0.3s';
         setTimeout(() => { gate.style.display = 'none'; }, 300);
@@ -248,9 +250,9 @@ function buildCard(video, uid) {
 const gridWrapper = document.getElementById('gridWrapper');
 let cardMap = {};
 
-// 同時再生数の制限（PC:5 / スマホ:2）
-const MAX_PLAYING = window.innerWidth <= 768 ? 5 : 10;
-const playingQueue = []; // 再生中のuidを追加順に管理
+// 同時再生数の制限（モバイル:5 / PC:4）
+const MAX_PLAYING = window.innerWidth <= 768 ? 5 : 4;
+const playingSet = new Set(); // 再生中のuidを挿入順で管理
 
 async function renderGrid(cat) {
     Object.values(cardMap).forEach(({ card }) => observer.unobserve(card));
@@ -319,10 +321,11 @@ function startPreview(uid) {
     videoEl.play().catch(() => { });
     if (overlay) overlay.classList.add('hidden');
 
-    // 再生キューに追加し、上限を超えたら最古の動画を停止
-    if (!playingQueue.includes(uid)) playingQueue.push(uid);
-    while (playingQueue.length > MAX_PLAYING) {
-        const oldest = playingQueue.shift();
+    // 再生セットに追加し、上限を超えたら最古の動画を停止
+    playingSet.add(uid);
+    while (playingSet.size > MAX_PLAYING) {
+        const oldest = playingSet.values().next().value;
+        playingSet.delete(oldest);
         if (oldest !== uid) stopPreview(oldest);
     }
 
@@ -371,9 +374,8 @@ function stopPreview(uid) {
     }
     if (it.overlay) it.overlay.classList.remove('hidden');
     if (it.bar) it.bar.style.width = '0%';
-    // 再生キューから除去
-    const idx = playingQueue.indexOf(uid);
-    if (idx !== -1) playingQueue.splice(idx, 1);
+    // 再生セットから除去
+    playingSet.delete(uid);
 }
 
 // =============================================================
@@ -393,7 +395,7 @@ const observer = new IntersectionObserver(entries => {
             stopPreview(uid);
         }
     });
-}, { threshold: 0.1 });
+}, { threshold: 0.3, rootMargin: '100px' });
 
 // =============================================================
 //  カードクリック → Xへ遷移
