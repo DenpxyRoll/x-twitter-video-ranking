@@ -249,7 +249,7 @@ const gridWrapper = document.getElementById('gridWrapper');
 let cardMap = {};
 
 // 同時再生数の制限（PC:5 / スマホ:2）
-const MAX_PLAYING = window.innerWidth <= 768 ? 4 : 10;
+const MAX_PLAYING = window.innerWidth <= 768 ? 5 : 10;
 const playingQueue = []; // 再生中のuidを追加順に管理
 
 async function renderGrid(cat) {
@@ -366,7 +366,7 @@ function stopPreview(uid) {
         it.videoEl.pause();
         it.videoEl.currentTime = it.video.startTime ?? 0;
         // 画面外はsrcを完全除去してメモリ解放（次回表示時に再ロード）
-        it.videoEl.removeAttribute('src');
+        it.videoEl.src = '';
         it.videoEl.load();
     }
     if (it.overlay) it.overlay.classList.remove('hidden');
