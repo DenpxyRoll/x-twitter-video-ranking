@@ -62,7 +62,7 @@ let _cachedData = null;
 async function loadData() {
     if (_cachedData) return _cachedData;
     try {
-        const res = await fetch('/data.json');
+        const res = await fetch('https://twvideo-rank.net/data.json?_=' + Date.now(), { cache: 'no-store' });
         if (!res.ok) throw new Error('fetch failed');
         _cachedData = await res.json();
         return _cachedData;
@@ -263,6 +263,7 @@ async function renderGrid(cat) {
     initFloatingBanners(stored);
 
     const videos = getVideos(cat, stored);
+    console.log('[renderGrid] videos:', videos);
 
     gridWrapper.innerHTML = '';
 
