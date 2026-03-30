@@ -263,7 +263,6 @@ async function renderGrid(cat) {
     initFloatingBanners(stored);
 
     const videos = getVideos(cat, stored);
-    console.log('[renderGrid] videos:', videos);
 
     gridWrapper.innerHTML = '';
 
