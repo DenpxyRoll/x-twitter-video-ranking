@@ -290,7 +290,7 @@ async function renderGrid(cat) {
                 videoEl: card.querySelector('video'),
                 overlay: document.getElementById(`po-${uid}`),
                 bar: document.getElementById(`pb-${uid}`),
-                timer: null, rafId: null,
+                timer: null, rafId: null, srcReleaseTimer: null,
             };
             observer.observe(card);
         });
@@ -307,6 +307,8 @@ function startPreview(uid) {
     const it = cardMap[uid];
     if (!it?.videoEl) return;
     stopPreview(uid);
+    // 画面外に出た直後に再表示された場合はsrc解放タイマーをキャンセル
+    if (it.srcReleaseTimer) { clearTimeout(it.srcReleaseTimer); it.srcReleaseTimer = null; }
 
     const { videoEl, overlay, bar, video } = it;
     const startT = video.startTime ?? 0;
@@ -369,9 +371,13 @@ function stopPreview(uid) {
     if (it.videoEl) {
         it.videoEl.pause();
         it.videoEl.currentTime = it.video.startTime ?? 0;
-        // 画面外はsrcを完全除去してメモリ解放（次回表示時に再ロード）
-        it.videoEl.src = '';
-        it.videoEl.load();
+        // 画面外に出てから2秒後にsrcを解放（その間に再表示されたらキャンセル）
+        if (it.srcReleaseTimer) clearTimeout(it.srcReleaseTimer);
+        it.srcReleaseTimer = setTimeout(() => {
+            it.srcReleaseTimer = null;
+            it.videoEl.src = '';
+            it.videoEl.load();
+        }, 2000);
     }
     if (it.overlay) it.overlay.classList.remove('hidden');
     if (it.bar) it.bar.style.width = '0%';
