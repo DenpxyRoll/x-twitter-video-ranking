@@ -251,7 +251,7 @@ const gridWrapper = document.getElementById('gridWrapper');
 let cardMap = {};
 
 // 同時再生数の制限（モバイル:5 / PC:4）
-const MAX_PLAYING = window.innerWidth <= 768 ? 5 : 4;
+const MAX_PLAYING = window.innerWidth <= 768 ? 5 : 10;
 const playingSet = new Set(); // 再生中のuidを挿入順で管理
 
 async function renderGrid(cat) {
