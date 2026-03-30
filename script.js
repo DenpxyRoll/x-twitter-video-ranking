@@ -314,8 +314,8 @@ function startPreview(uid) {
     const startT = video.startTime ?? 0;
     const endT = video.endTime; // null = 動画全体モード
 
-    // 初回再生時にsrcをセット（遅延ロード）
-    if (!videoEl.src && videoEl.dataset.src) {
+    // 初回再生時、またはsrcが解放済みの場合にセット（遅延ロード）
+    if (!videoEl.getAttribute('src') && videoEl.dataset.src) {
         videoEl.src = videoEl.dataset.src;
     }
     videoEl.preload = 'auto';
