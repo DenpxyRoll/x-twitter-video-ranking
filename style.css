@@ -682,20 +682,20 @@ a.upload-btn {
   }
 
   #gridWrapper {
+    display: block;
     scroll-snap-type: y mandatory;
     overflow-y: scroll;
     height: 100dvh;
   }
 
   .video-grid {
+    display: grid;
     grid-template-columns: 1fr;
   }
 
   .video-card {
     height: 100dvh;
     scroll-snap-align: start;
-    display: flex;
-    flex-direction: column;
   }
 
   .video-thumb {
