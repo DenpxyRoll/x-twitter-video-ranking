@@ -826,3 +826,14 @@ a.upload-btn {
     max-width: 160px;
   }
 }
+
+/* 左下固定バナー */
+.banner-bottomcenter {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: auto;
+  transform: none;
+  max-width: 300px;
+  z-index: 9999;
+}
