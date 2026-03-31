@@ -687,7 +687,7 @@ a.upload-btn {
   }
 
   .video-thumb {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 9 / 16;
   }
 
   .main-content {
