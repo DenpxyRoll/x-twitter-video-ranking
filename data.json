@@ -853,7 +853,7 @@
       "enabled": true
     },
     "bottomCenter": {
-      "htmlCode": "<!-- バナー(SOD select見放題)  ここから -->\n<a href='https://cnt.affiliate.fc2.com/cgi-bin/click.cgi?aff_userid=346706&aff_siteid=348267&aff_shopid=409' target='_blank'>\n<img src='https://cnt.affiliate.fc2.com/cgi-bin/banner.cgi?aff_siteid=348267&bid=20989&uid=346706' width='728' height='90' border='0'></a>\n<!-- ここまで -->",
+      "htmlCode": "<script type=\"text/javascript\">blogparts={\"base\":\"https://www.dlsite.com/\",\"type\":\"ranking\",\"site\":\"home\",\"query\":{\"period\":\"week\"},\"title\":\"ランキング\",\"display\":\"horizontal\",\"detail\":\"0\",\"column\":\"v\",\"image\":\"large\",\"count\":\"1\",\"wrapper\":\"0\",\"autorotate\":true,\"aid\":\"Denpxyroll\"}</script><script type=\"text/javascript\" src=\"https://www.dlsite.com/js/blogparts.js\" charset=\"UTF-8\"></script>",
       "enabled": true
     },
     "popup": {
