@@ -691,18 +691,19 @@ a.upload-btn {
   .video-card {
     height: auto;
     scroll-snap-align: unset;
-    width: 90%;
-    margin: 0 auto 16px;
+    width: auto;
+    margin: 0;
   }
 
   .video-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 12px;
   }
 
   .video-thumb {
-    aspect-ratio: unset;
-    flex: 1;
+    aspect-ratio: 9 / 16;
   }
 
   .main-content {
@@ -756,8 +757,9 @@ a.upload-btn {
 
   /* 動画グリッド: 2カラム固定 */
   .video-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
+    padding: 0 8px;
   }
 
   .main-content {
