@@ -835,5 +835,6 @@ a.upload-btn {
   right: auto;
   transform: none;
   max-width: 300px;
+  width: 300px;
   z-index: 9999;
 }
