@@ -681,12 +681,19 @@ a.upload-btn {
     padding: 5px 10px;
   }
 
+  #gridWrapper {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100dvh;
+  }
+
   .video-grid {
     grid-template-columns: 1fr;
   }
 
   .video-card {
-    height: calc(100vh - 120px);
+    height: 100dvh;
+    scroll-snap-align: start;
     display: flex;
     flex-direction: column;
   }
