@@ -682,8 +682,12 @@ a.upload-btn {
   }
 
   .video-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .video-thumb {
+    aspect-ratio: 16 / 9;
   }
 
   .main-content {
@@ -775,119 +779,5 @@ a.upload-btn {
   .inline-banner-cell {
     width: 160px;
     max-width: 160px;
-  }
-}
-
-/* ===== Mobile TikTok風フルスクリーン（768px以下のみ） ===== */
-@media (max-width: 768px) {
-  body.tiktok-mode {
-    overflow: hidden;
-  }
-
-  body.tiktok-mode .main-content {
-    padding: 0;
-    max-width: 100%;
-    margin: 0;
-    height: calc(100vh - var(--header-h));
-    overflow: hidden;
-  }
-
-  body.tiktok-mode .section-header {
-    display: none;
-  }
-
-  body.tiktok-mode #gridWrapper {
-    height: 100%;
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory;
-    -webkit-overflow-scrolling: touch;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .tiktok-card {
-    width: 100%;
-    height: calc(100vh - var(--header-h));
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    position: relative;
-    overflow: hidden;
-    background: #000;
-    cursor: pointer;
-  }
-
-  .tiktok-card video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    pointer-events: none;
-  }
-
-  .tiktok-play-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.2);
-    opacity: 1;
-    transition: opacity 0.2s;
-  }
-
-  .tiktok-play-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .tiktok-info-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20px 16px 40px;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
-    color: #fff;
-    pointer-events: none;
-  }
-
-  .tiktok-rank {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 6px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  }
-
-  .tiktok-user {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  }
-
-  .tiktok-caption {
-    font-size: 13px;
-    line-height: 1.5;
-    opacity: 0.9;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  }
-
-  .tiktok-x-badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .tiktok-x-badge svg {
-    width: 16px;
-    height: 16px;
   }
 }
