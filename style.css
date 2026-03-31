@@ -729,6 +729,12 @@ a.upload-btn {
     width: 100% !important;
     height: auto !important;
     max-width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  .inline-banner-cell a {
+    display: block;
+    width: 100%;
   }
 }
 
