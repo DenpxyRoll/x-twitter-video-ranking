@@ -714,6 +714,21 @@ a.upload-btn {
   .banner-topright {
     max-width: 150px;
   }
+
+  .inline-banner-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .inline-banner-cell {
+    width: 100%;
+    text-align: center;
+  }
+
+  .inline-banner-cell img {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 /* ===== Responsive: Smartphone (480px以下) ===== */
