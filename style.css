@@ -736,6 +736,12 @@ a.upload-btn {
     display: block;
     width: 100%;
   }
+
+  .inline-banner-row * {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
 }
 
 /* ===== Responsive: Smartphone (480px以下) ===== */
