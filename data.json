@@ -879,7 +879,7 @@
         },
         "right": {
           "enabled": true,
-          "htmlCode": "<iframe src=\"https://gallerieshub.com/carib/vb/index300x250.html?affid=239789\" width=\"300\" height=\"250\" frameborder=\"no\" scrolling=\"no\"></iframe>"
+          "htmlCode": "<a rel=\"noopener sponsored\" href=\"https://dlaf.jp/maniax/dlaf/=/t/i/link/work/aid/Denpxyroll/id/RJ01572836.html\" target=\"_blank\" style=\"display:block;width:100%;overflow:hidden;\">\n<img id=\"dlsite-slide\" src=\"https://img.dlsite.jp/modpub/images2/work/doujin/RJ01573000/RJ01572836_img_smp1.webp\" style=\"width:100%;height:auto;display:block;\" border=\"0\" />\n</a>\n<script>\n(function(){\n  var imgs = [\n    'https://img.dlsite.jp/modpub/images2/work/doujin/RJ01573000/RJ01572836_img_smp1.webp',\n    'https://img.dlsite.jp/modpub/images2/work/doujin/RJ01573000/RJ01572836_img_smp4.webp',\n    'https://img.dlsite.jp/modpub/images2/work/doujin/RJ01573000/RJ01572836_img_smp5.webp',\n    'https://img.dlsite.jp/modpub/images2/work/doujin/RJ01573000/RJ01572836_img_smp6.webp'\n  ];\n  var i = 0;\n  var el = document.getElementById('dlsite-slide');\n  setInterval(function(){\n    i = (i + 1) % imgs.length;\n    el.src = imgs[i];\n  }, 2000);\n})();\n</script>"
         }
       },
       {
