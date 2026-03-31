@@ -683,11 +683,17 @@ a.upload-btn {
 
   .video-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+  }
+
+  .video-card {
+    height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
   }
 
   .video-thumb {
-    aspect-ratio: 9 / 16;
+    aspect-ratio: unset;
+    flex: 1;
   }
 
   .main-content {
