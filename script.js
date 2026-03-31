@@ -253,10 +253,8 @@ let cardMap = {};
 // 同時再生数の制限（モバイル:5 / PC:4）
 const MAX_PLAYING = window.innerWidth <= 768 ? 5 : 10;
 const playingSet = new Set(); // 再生中のuidを挿入順で管理
-const isMobile = window.innerWidth <= 768;
 
 async function renderGrid(cat) {
-    if (isMobile) { await renderTikTok(cat); return; }
     Object.values(cardMap).forEach(({ card }) => observer.unobserve(card));
     gridWrapper.innerHTML = '<p class="empty-msg">読み込み中...</p>';
     cardMap = {};
@@ -422,118 +420,6 @@ gridWrapper.addEventListener('click', evt => {
         }
         window.open(url, '_blank', 'noopener,noreferrer');
     }
-});
-
-// =============================================================
-//  モバイル TikTok風フルスクリーン表示（768px以下のみ）
-// =============================================================
-function buildTikTokCard(video, uid) {
-    const hasPreview = video.previewSrc?.trim() !== '';
-    const card = document.createElement('div');
-    card.className = 'tiktok-card';
-    card.dataset.uid = uid;
-    card.dataset.xUrl = video.xUrl;
-    card.innerHTML = `
-        ${hasPreview ? `<video muted playsinline loop preload="none" data-src="${e(video.previewSrc)}"></video>` : ''}
-        <div class="tiktok-play-overlay" id="tpo-${uid}">
-            <div class="play-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            </div>
-        </div>
-        <div class="tiktok-info-overlay">
-            <div class="tiktok-rank">${rankLabel(video.rank)}</div>
-            <div class="tiktok-user">${e(video.user)}</div>
-            ${video.caption ? `<p class="tiktok-caption">${e(video.caption)}</p>` : ''}
-        </div>
-        <div class="tiktok-x-badge">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </div>
-    `;
-    return card;
-}
-
-let cardMapTk = {};
-let playingUidTk = null;
-
-function startTikTok(uid) {
-    if (playingUidTk && playingUidTk !== uid) stopTikTok(playingUidTk);
-    const it = cardMapTk[uid];
-    if (!it?.videoEl) return;
-    if (it.srcReleaseTimer) { clearTimeout(it.srcReleaseTimer); it.srcReleaseTimer = null; }
-    if (!it.videoEl.getAttribute('src') && it.videoEl.dataset.src) {
-        it.videoEl.src = it.videoEl.dataset.src;
-    }
-    it.videoEl.preload = 'auto';
-    it.videoEl.load();
-    it.videoEl.currentTime = it.video.startTime ?? 0;
-    it.videoEl.play().catch(() => {});
-    if (it.overlay) it.overlay.classList.add('hidden');
-    playingUidTk = uid;
-}
-
-function stopTikTok(uid) {
-    const it = cardMapTk[uid];
-    if (!it?.videoEl) return;
-    it.videoEl.pause();
-    if (it.overlay) it.overlay.classList.remove('hidden');
-    if (playingUidTk === uid) playingUidTk = null;
-    if (it.srcReleaseTimer) clearTimeout(it.srcReleaseTimer);
-    it.srcReleaseTimer = setTimeout(() => {
-        it.srcReleaseTimer = null;
-        it.videoEl.src = '';
-        it.videoEl.load();
-    }, 2000);
-}
-
-const observerTk = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        const uid = entry.target.dataset.uid;
-        if (entry.isIntersecting) {
-            startTikTok(uid);
-        } else {
-            stopTikTok(uid);
-        }
-    });
-}, { threshold: 0.8 });
-
-async function renderTikTok(cat) {
-    document.body.classList.add('tiktok-mode');
-    Object.values(cardMapTk).forEach(({ card }) => observerTk.unobserve(card));
-    gridWrapper.innerHTML = '<p class="empty-msg">読み込み中...</p>';
-    cardMapTk = {};
-    playingUidTk = null;
-
-    const stored = await loadData();
-    initFloatingBanners(stored);
-
-    const videos = getVideos(cat, stored);
-    gridWrapper.innerHTML = '';
-
-    if (videos.length === 0) {
-        gridWrapper.innerHTML = '<p class="empty-msg">この期間の動画はまだありません。</p>';
-        return;
-    }
-
-    videos.forEach(video => {
-        const uid = `v${video.rank}`;
-        const card = buildTikTokCard(video, uid);
-        gridWrapper.appendChild(card);
-        cardMapTk[uid] = {
-            card, video,
-            videoEl: card.querySelector('video'),
-            overlay: document.getElementById(`tpo-${uid}`),
-            srcReleaseTimer: null,
-        };
-        observerTk.observe(card);
-    });
-}
-
-// TikTokカードのクリック → Xへ遷移
-gridWrapper.addEventListener('click', evt => {
-    const card = evt.target.closest('.tiktok-card');
-    if (!card) return;
-    const url = card.dataset.xUrl;
-    if (url) window.open(url, '_blank', 'noopener,noreferrer');
 });
 
 // =============================================================
