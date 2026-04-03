@@ -271,6 +271,15 @@ async function renderGrid(cat) {
         return;
     }
 
+    // topBanner: 動画一覧の最上部に表示
+    const topBannerCfg = stored?.banners?.topBanner;
+    if (topBannerCfg?.enabled && topBannerCfg.htmlCode?.trim()) {
+        const topBannerEl = document.createElement('div');
+        topBannerEl.className = 'inline-banner-row';
+        topBannerEl.innerHTML = `<div class="inline-banner-cell" style="width:100%">${topBannerCfg.htmlCode}</div>`;
+        gridWrapper.appendChild(topBannerEl);
+    }
+
     for (let groupIdx = 0; groupIdx < INLINE_SETS; groupIdx++) {
         const start = groupIdx * 5;
         const chunk = videos.slice(start, start + 5);
