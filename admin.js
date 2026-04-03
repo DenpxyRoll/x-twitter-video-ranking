@@ -50,6 +50,7 @@ function emptyInlineSet() {
 function emptyData() {
   const d = {
     banners: {
+      topBanner: emptyBannerSlot(),
       topRight: emptyBannerSlot(),
       bottomCenter: emptyBannerSlot(),
       popup: { htmlCode: '', enabled: false, delay: 1 },
@@ -108,6 +109,7 @@ function normalizeData(parsed) {
     parsed[c.key] = parsed[c.key].map(e => ({ ...emptyVideoEntry(), ...e }));
   });
   if (!parsed.banners) parsed.banners = def.banners;
+  parsed.banners.topBanner = { ...emptyBannerSlot(), ...parsed.banners.topBanner };
   parsed.banners.topRight = { ...emptyBannerSlot(), ...parsed.banners.topRight };
   parsed.banners.bottomCenter = { ...emptyBannerSlot(), ...parsed.banners.bottomCenter };
   parsed.banners.popup = { ...def.banners.popup, ...parsed.banners.popup };
@@ -413,6 +415,8 @@ function renderBanners() {
   rankList.innerHTML = '';
 
   const pu = data.banners.popup;
+  rankList.innerHTML += bannerSlotHtml('top-banner', '📌 動画一覧の最上部バナー', data.banners.topBanner);
+
   rankList.innerHTML += `
     <div class="banner-section" style="border: 2px solid #a855f7;">
       <h3 class="banner-title">🎯 ポップアップ広告（ページを開いた瞬間に表示）</h3>
@@ -495,6 +499,7 @@ function syncAllBanners() {
   if (puHtml) data.banners.popup.htmlCode = puHtml.value;
   if (puDelay) data.banners.popup.delay = parseFloat(puDelay.value) || 0;
   if (puEnabled) data.banners.popup.enabled = puEnabled.checked;
+  setFromKey('top-banner', (cfg, v, c) => { data.banners.topBanner.htmlCode = v; data.banners.topBanner.enabled = c; });
   setFromKey('floating-tr', (cfg, v, c) => { data.banners.topRight.htmlCode = v; data.banners.topRight.enabled = c; });
   setFromKey('floating-bc', (cfg, v, c) => { data.banners.bottomCenter.htmlCode = v; data.banners.bottomCenter.enabled = c; });
   for (let i = 0; i < INLINE_SETS; i++) {
