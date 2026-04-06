@@ -221,10 +221,19 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 //  初期化（ログイン後）
 // =============================================================
 let data = emptyData();
+let clickData = {};
+
+async function loadClicks() {
+  try {
+    const res = await fetch('/clicks');
+    if (!res.ok) return {};
+    return await res.json();
+  } catch { return {}; }
+}
 
 async function initAdmin() {
   showToast('⏳ データを読み込み中...');
-  data = await loadData();
+  [data, clickData] = await Promise.all([loadData(), loadClicks()]);
   renderGithubSettings();
   renderCurrentTab();
   showToast('✅ データを読み込みました！');
@@ -320,6 +329,7 @@ function renderVideos() {
     <span>開始(秒)</span>
     <span>終了(秒)</span>
     <span>状態</span>
+    <span>クリック</span>
   `;
   rankList.appendChild(header);
 
@@ -328,6 +338,7 @@ function renderVideos() {
     const entry = entries[i];
     const hasUrl = entry.xUrl.trim() !== '';
 
+    const clickCount = clickData[`${currentCat}::${entry.xUrl}`] || 0;
     const row = document.createElement('div');
     row.className = 'rank-row';
     row.innerHTML = `
@@ -349,6 +360,7 @@ function renderVideos() {
       <input type="number" class="time-input" min="0" step="0.5"
         placeholder="3" value="${esc(entry.endTime)}" data-index="${i}" data-field="endTime" />
       <div class="row-status ${hasUrl ? 'ok' : ''}">${hasUrl ? '✓ 設定済' : '未設定'}</div>
+      <div class="click-count-cell">${clickCount > 0 ? clickCount : '—'}</div>
     `;
     rankList.appendChild(row);
 
