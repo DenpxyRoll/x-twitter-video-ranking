@@ -420,13 +420,16 @@ gridWrapper.addEventListener('click', evt => {
     if (!card) return;
     const url = card.dataset.xUrl;
     if (url) {
+        const category = document.querySelector('.filter-btn.active')?.dataset.filter || 'today';
         if (typeof gtag !== 'undefined') {
-            gtag('event', 'video_click', {
-                rank: card.dataset.uid,
-                video_url: url,
-                category: document.querySelector('.filter-btn.active')?.dataset.filter || 'today',
-            });
+            gtag('event', 'video_click', { rank: card.dataset.uid, video_url: url, category });
         }
+        // クリック数をKVに送信（fire and forget）
+        fetch('/click', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url, category }),
+        }).catch(() => {});
         window.open(url, '_blank', 'noopener,noreferrer');
     }
 });
