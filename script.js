@@ -425,7 +425,7 @@ gridWrapper.addEventListener('click', evt => {
             gtag('event', 'video_click', { rank: card.dataset.uid, video_url: url, category });
         }
         // クリック数をKVに送信（fire and forget）
-        fetch('/click', {
+        fetch('https://x-twitter-video-ranking.rankden.workers.dev/click', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url, category }),
