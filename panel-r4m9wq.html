@@ -244,7 +244,7 @@
         /* Rank table */
         .table-header {
             display: grid;
-            grid-template-columns: 52px 1fr 1fr 110px 70px 70px 80px;
+            grid-template-columns: 52px 1fr 1fr 110px 70px 70px 80px 60px;
             gap: 6px;
             padding: 0 0 8px;
             border-bottom: 2px solid var(--border);
@@ -261,7 +261,7 @@
 
         .rank-row {
             display: grid;
-            grid-template-columns: 52px 1fr 1fr 110px 70px 70px 80px;
+            grid-template-columns: 52px 1fr 1fr 110px 70px 70px 80px 60px;
             gap: 6px;
             align-items: center;
             padding: 7px 0;
@@ -357,6 +357,13 @@
 
         .row-status.ok {
             color: var(--green);
+            font-weight: 600;
+        }
+
+        .click-count-cell {
+            font-size: 12px;
+            text-align: center;
+            color: var(--accent);
             font-weight: 600;
         }
 
