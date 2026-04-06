@@ -12,5 +12,8 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
+  ],
+  "kv_namespaces": [
+    { "binding": "VIDEO_CLICKS", "id": "8d874645a7cb44cda3c7a61d86ae3127" }
   ]
 }
