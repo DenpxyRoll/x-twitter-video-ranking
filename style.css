@@ -742,6 +742,16 @@ a.upload-btn {
     max-width: 100% !important;
     height: auto !important;
   }
+
+  .header-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filter-btn {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
 }
 
 /* ===== Responsive: Smartphone (480px以下) ===== */
