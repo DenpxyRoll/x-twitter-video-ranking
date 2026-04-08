@@ -846,6 +846,24 @@ a.upload-btn {
     font-size: 10px;
     padding: 3px 6px;
   }
+
+  .logo span {
+    font-size: 11px;
+  }
+
+  .header-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .filter-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+    flex: 1;
+    text-align: center;
+    min-width: 60px;
+  }
 }
 
 /* 左下固定バナー */
