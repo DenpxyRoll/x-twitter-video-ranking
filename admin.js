@@ -225,7 +225,7 @@ let clickData = {};
 
 async function loadClicks() {
   try {
-    const res = await fetch('/clicks');
+    const res = await fetch('https://x-twitter-video-ranking.rankden.workers.dev/clicks');
     if (!res.ok) return {};
     return await res.json();
   } catch { return {}; }
